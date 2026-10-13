@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Relatório Semanal da Família — Template (dados fictícios)</title>
+<!--
+  TEMPLATE · Relatório semanal da família (entregue às segundas, 8h07 BRT)
+  TODOS OS DADOS DESTE ARQUIVO SÃO FICTÍCIOS (Família Silva, Banco A/B/C, valores redondos).
+  Tags de fonte: PIERRE (Open Finance) · BUREAU (score de crédito, via agente dedicado) ·
+  AVALIAÇÃO (valor de mercado informado) · BANCO (extrato PDF do financiamento) · HIST (snapshot histórico).
+  Status: .ok (verde) · .warn (amarelo) · .bad (vermelho).
+  Regras: nunca inventar números; sem dado => "a conectar"; CPF sempre ***.***.***-XX; contas/cartões só com os 4 últimos dígitos; sem endereços.
+-->
+<style>
+@page{size:A4;margin:0}
+:root{--bg:#2a2d31;--card:#34383d;--card2:#3b4046;--line:#454a51;--tx:#ebe9e6;--mu:#a6abb2;--mu2:#80868e;
+ --ok:#6fcf97;--warn:#f2c94c;--bad:#eb7a7a;--track:#4a4f56;--acc:#c9ced5}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:Inter,"Noto Sans",sans-serif;color:var(--tx);font-size:8.9pt;line-height:1.38}
+.page{width:210mm;height:297mm;padding:11mm 12mm 14mm;position:relative;overflow:hidden;break-after:page;background:var(--bg)}
+.page:last-child{break-after:auto}
+.pfoot{position:absolute;left:12mm;right:12mm;bottom:6mm;display:flex;justify-content:space-between;font-size:7pt;color:var(--mu2);border-top:1px solid var(--line);padding-top:4px}
+h1{font-size:20pt;font-weight:600;margin:0;letter-spacing:-.3px}
+h2{font-size:11.5pt;font-weight:600;margin:13px 0 7px;letter-spacing:-.1px}
+h2 .n{color:var(--mu2);font-weight:500;margin-right:6px}
+h3{font-size:9pt;font-weight:600;margin:0 0 6px;color:var(--tx)}
+.muted{color:var(--mu)}.small{font-size:8pt}.tiny{font-size:7.2pt}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.badge{display:inline-block;border-radius:20px;padding:2px 11px;font-size:7.6pt;font-weight:600;letter-spacing:.7px;text-transform:uppercase;background:var(--tx);color:var(--bg)}
+.src{display:inline-block;font-size:6.5pt;border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px;font-weight:600;letter-spacing:.3px}
+.src.h{background:#4a4f56;color:#c3c7cc}.src.p{background:#33485a;color:#a9cbe6}.src.s{background:#4d3f3a;color:#e6c3b0}.src.m{background:#3f4a3f;color:#bcd8bc}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px;break-inside:avoid}
+.grid{display:grid;gap:8px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
+.grid .card{margin-bottom:0}
+.big{font-size:23pt;font-weight:600;letter-spacing:-.6px}
+.kpi{font-size:13pt;font-weight:600;letter-spacing:-.3px}
+.t-ok{color:var(--ok)}.t-warn{color:var(--warn)}.t-bad{color:var(--bad)}
+.label{font-size:7.4pt;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.label .dot{margin-right:5px;vertical-align:0}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(111,207,151,.18)}
+.dot.warn{background:var(--warn);box-shadow:0 0 0 3px rgba(242,201,76,.18)}
+.dot.bad{background:var(--bad);box-shadow:0 0 0 3px rgba(235,122,122,.18)}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:1px 8px;font-size:7pt;font-weight:600;letter-spacing:.2px}
+.chip.ok{background:rgba(111,207,151,.15);color:var(--ok)}
+.chip.warn{background:rgba(242,201,76,.15);color:var(--warn)}
+.chip.bad{background:rgba(235,122,122,.16);color:var(--bad)}
+.chip.n{background:var(--card2);color:var(--mu)}
+.kchips{margin-top:5px;display:flex;gap:4px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse;font-size:8.3pt}
+td,th{padding:3px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-weight:500;color:var(--mu2);font-size:7.2pt;text-transform:uppercase;letter-spacing:.4px}
+table.cat td:nth-child(2){width:42%}
+td.r,th.r{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.bar{height:7px;background:var(--track);border-radius:4px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--acc);border-radius:4px}
+.bar.ok>i{background:var(--ok)}.bar.warn>i{background:var(--warn)}.bar.bad>i{background:var(--bad)}
+.bar.ph>i{background:repeating-linear-gradient(45deg,#5a6068 0 4px,#464b52 4px 8px)}
+.ph-box{border:1px dashed #5a6068;border-radius:10px;color:var(--mu2);font-size:7.8pt;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px}
+.attn{display:grid;grid-template-columns:24px 1fr;gap:9px;padding:6px 0;border-bottom:1px solid var(--line)}
+.attn:last-child{border-bottom:none}
+.light{width:14px;display:flex;flex-direction:column;gap:3px;padding:3px;background:#24272a;border-radius:8px;align-items:center}
+.light i{width:8px;height:8px;border-radius:50%;background:#3d4147;display:block}
+.light.bad i:nth-child(1){background:var(--bad)}.light.warn i:nth-child(2){background:var(--warn)}.light.ok i:nth-child(3){background:var(--ok)}
+.note{background:var(--card2);border-radius:10px;padding:7px 10px;font-size:8pt;color:var(--mu);margin:6px 0}
+.diff{border-left:3px solid var(--warn);background:#3a3830;border-radius:6px;padding:6px 10px;font-size:8pt;color:#e3dcc6;margin:6px 0 8px}
+.ring{--p:100;--c:var(--acc);width:52px;height:52px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--track) 0);display:flex;align-items:center;justify-content:center;flex:none}
+.ring>span{width:38px;height:38px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:8pt;font-weight:600}
+.rowc{display:flex;gap:10px;align-items:center}
+.gauge{width:130px;height:68px;position:relative;overflow:hidden;margin:2px auto 0}
+.gauge .arc{width:130px;height:130px;border-radius:50%;
+ background:conic-gradient(from -90deg,var(--bad) 0 54deg,var(--warn) 54deg 108deg,var(--ok) 108deg 180deg,transparent 180deg)}
+.gauge .hole{position:absolute;left:16px;top:16px;width:98px;height:98px;border-radius:50%;background:var(--card)}
+.gauge .needle{position:absolute;left:64px;bottom:0;width:2px;height:56px;background:var(--tx);transform-origin:bottom center;border-radius:2px}
+.gauge .val{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:13pt;font-weight:600}
+ul{margin:4px 0 0 16px;padding:0}li{margin:2px 0}
+.chips span.c{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border-radius:20px;padding:2px 9px;margin:2px 3px 2px 0;font-size:7.8pt}
+.src.b{background:#3d3a52;color:#cbc4f0}
+.strip{display:flex;gap:2px;flex-wrap:nowrap;margin:6px 0 3px}
+.strip i{flex:1;height:16px;border-radius:3px;background:var(--ok);display:block}
+.strip i.l{background:var(--bad)}.strip i.c{background:#5a6068}
+.stack{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--track)}
+.stack i{display:block;height:100%}
+.kv td{padding:2.5px 4px}
+.scale{display:flex;justify-content:space-between;font-size:6.6pt;color:var(--mu2);margin-top:2px}
+.fake{position:absolute;top:4mm;left:50%;transform:translateX(-50%);font-size:6.6pt;letter-spacing:1.2px;color:var(--warn);background:rgba(242,201,76,.10);border:1px solid rgba(242,201,76,.35);border-radius:20px;padding:1px 10px;text-transform:uppercase;font-weight:600}
+</style></head><body>
+
+<!-- ============ PÁGINA 1 · RESUMO + SEMANA ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<div class="header">
+ <div>
+  <div class="muted small">Relatório semanal da família · entregue às segundas</div>
+  <h1>Família Silva</h1>
+  <div class="muted">Semana de 05–11/10/2026</div>
+ </div>
+ <div style="text-align:right">
+  <span class="badge">Template</span>
+  <div class="tiny muted" style="margin-top:6px;line-height:1.6">
+   <span class="src p">PIERRE</span> Open Finance, leitura 12/10/2026 08h07 BRT<br>
+   <span class="src s">BUREAU</span> score via agente de crédito, leitura 11/10/2026<br>
+   <span class="src m">AVALIAÇÃO</span> valor de mercado informado (imóvel)<br>
+   <span class="src b">BANCO</span> extrato PDF do financiamento (data base 09/10/2026)<br>
+   <span class="src h">HIST</span> snapshot histórico · fonte em transição
+  </div>
+ </div>
+</div>
+
+<h2><span class="n">01</span>Resumo · Patrimônio total</h2>
+<div class="grid g2">
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Patrimônio líquido <span class="src p">PIERRE</span> <span class="src m">AVALIAÇÃO</span> <span class="src b">BANCO</span></div>
+  <div class="big">R$ 435.000,00</div>
+  <div class="kchips"><span class="chip n">bruto − saldo devedor</span><span class="chip warn">95,8% em imóvel</span></div>
+  <table class="kv" style="margin-top:6px">
+   <tr><td class="muted">Patrimônio bruto</td><td class="r">R$ 835.000,00</td></tr>
+   <tr><td class="muted">(−) Saldo devedor financiamento <span class="src b">BANCO</span></td><td class="r t-bad">− R$ 400.000,00</td></tr>
+  </table>
+  <div class="tiny muted" style="margin-top:3px">Bruto = imóvel R$ 800.000,00 (avaliação informada) + investimentos R$ 30.000,00 + contas R$ 5.000,00. Evolução semana a semana: a conectar.</div>
+ </div>
+ <div class="card">
+  <h3>Composição</h3>
+  <table>
+   <tr><td>Imóvel <span class="src m">AVALIAÇÃO</span></td><td class="r">R$ 800.000,00</td></tr>
+   <tr><td colspan="2"><div class="bar warn"><i style="width:95.8%"></i></div></td></tr>
+   <tr><td>Investimentos · Banco C <span class="src h">HIST</span></td><td class="r">R$ 30.000,00</td></tr>
+   <tr><td colspan="2"><div class="bar"><i style="width:3.6%;min-width:3px"></i></div></td></tr>
+   <tr><td>Contas correntes · Bancos A, B, C <span class="src p">PIERRE</span></td><td class="r">R$ 5.000,00</td></tr>
+   <tr><td colspan="2"><div class="bar"><i style="width:0.6%;min-width:3px"></i></div></td></tr>
+   <tr><td>(−) Financiamento imobiliário <span class="src b">BANCO</span></td><td class="r t-bad">− R$ 400.000,00</td></tr>
+   <tr><td colspan="2"><div class="bar bad"><i style="width:50%"></i></div></td></tr>
+  </table>
+  <div class="tiny muted" style="margin-top:4px">Saldo devedor = 50% do valor do imóvel · imóvel líquido R$ 400.000,00.</div>
+ </div>
+</div>
+
+<div class="grid g4" style="margin-top:8px">
+ <div class="card"><div class="rowc"><div class="ring" style="--p:60;--c:var(--warn)"><span>60%</span></div><div><div class="label">Risco</div><b>Moderado</b><div class="kchips"><span class="chip warn">acima da meta</span></div></div></div></div>
+ <div class="card"><div class="rowc"><div class="ring" style="--p:90;--c:var(--warn)"><span>90%</span></div><div><div class="label">Geografia</div><b>Brasil</b><div class="kchips"><span class="chip warn">pouca moeda forte</span></div></div></div></div>
+ <div class="card"><div class="rowc"><div class="ring" style="--p:70;--c:var(--ok)"><span>70%</span></div><div><div class="label">Carteira BRL</div><b>Renda fixa</b></div></div></div>
+ <div class="card"><div class="rowc"><div class="ring" style="--p:10;--c:var(--acc)"><span>10%</span></div><div><div class="label">Internacional</div><b>ETF global</b><div class="tiny muted">posição pequena</div></div></div></div>
+</div>
+<div class="tiny muted" style="margin:2px 2px -3px">Distribuições acima: <span class="src h">HIST</span> snapshot da carteira.</div>
+
+<div class="grid g3" style="margin-top:8px">
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Saldo em contas <span class="src p">PIERRE</span></div>
+  <div class="kpi t-ok">R$ 5.000,00</div>
+  <div class="kchips"><span class="chip ok">positivo</span><span class="chip n">3 contas</span></div>
+ </div>
+ <div class="card">
+  <div class="label"><span class="dot warn"></span>Faturas em aberto <span class="src p">PIERRE</span></div>
+  <div class="kpi">R$ 4.000,00</div>
+  <div class="kchips"><span class="chip warn">1 cartão &gt; 80% do limite</span><span class="chip n">3 cartões</span></div>
+ </div>
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Crédito · titular <span class="src s">BUREAU</span></div>
+  <div class="kpi t-ok">Score 720</div>
+  <div class="kchips"><span class="chip ok">sem negativações</span><span class="chip n">faixa “Bom”</span></div>
+ </div>
+</div>
+<div class="diff"><b>Atenção à leitura:</b> o patrimônio líquido desconta o financiamento imobiliário, mas <u>não</u> desconta as faturas de cartão em aberto (R$ 4.000,00). Os números vêm de fontes diferentes, lidas em horários diferentes — cada valor traz sua tag de origem.</div>
+
+<h2><span class="n">02</span>Esta semana · 05–11/10 <span class="src p">PIERRE</span></h2>
+<div class="grid g3">
+ <div class="card"><div class="label"><span class="dot warn"></span>Gastos (conta + cartão)</div><div class="kpi">R$ 2.000,00</div><div class="kchips"><span class="chip n">12 movimentações</span></div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Entradas</div><div class="kpi t-ok">R$ 500,00</div><div class="tiny muted" style="margin-top:3px">reembolso R$ 400,00 + rendimentos R$ 100,00</div></div>
+ <div class="card"><div class="label"><span class="dot warn"></span>Saldo da semana</div><div class="kpi t-warn">R$ -1.500,00</div><div class="tiny muted" style="margin-top:3px">salário entra no dia 5 · semana sem entrada principal</div></div>
+</div>
+<div class="card" style="margin-top:8px">
+ <h3>Maiores lançamentos da semana</h3>
+ <table>
+  <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Origem</th><th class="r">Valor</th></tr>
+  <tr><td>10/10</td><td>Supermercado do bairro</td><td>Supermercado</td><td>Cartão Banco A ···1001</td><td class="r">R$ 600,00</td></tr>
+  <tr><td>06/10</td><td>Pix · Mensalidade escolar</td><td>Educação</td><td>Conta Banco B ···2002</td><td class="r">R$ 500,00</td></tr>
+  <tr><td>08/10</td><td>Farmácia</td><td>Saúde</td><td>Cartão Banco A ···1001</td><td class="r">R$ 300,00</td></tr>
+  <tr><td>07/10</td><td>Posto de combustível</td><td>Transporte</td><td>Cartão Banco B ···2002</td><td class="r">R$ 250,00</td></tr>
+  <tr><td>09/10</td><td>Internet + celular</td><td>Telecom</td><td>Conta Banco A ···1001</td><td class="r">R$ 200,00</td></tr>
+  <tr><td colspan="4" class="muted">Demais 7 lançamentos (padaria, estacionamento, streaming e outros)</td><td class="r muted">R$ 150,00</td></tr>
+ </table>
+</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>1 / 6</span></div>
+</div>
+
+<!-- ============ PÁGINA 2 · FINANCIAMENTO ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<h2 style="margin-top:0"><span class="n">03</span>Financiamento imobiliário <span class="src b">BANCO</span></h2>
+<div class="tiny muted" style="margin:-3px 0 7px">Contrato final XXXX · SFH · SAC · TR · fonte: extrato PDF do banco (data base 09/10/2026) lido com pdftotext · endereço do imóvel omitido por regra de privacidade</div>
+<div class="grid g4">
+ <div class="card"><div class="label"><span class="dot warn"></span>Saldo devedor</div><div class="kpi">R$ 400.000,00</div><div class="kchips"><span class="chip n">extrato · data base 09/10</span></div></div>
+ <div class="card"><div class="label"><span class="dot warn"></span>Próxima parcela</div><div class="kpi">R$ 4.000,00</div><div class="kchips"><span class="chip warn">vence 15/10/2026</span></div><div class="tiny muted" style="margin-top:3px">Parcela 61 de 360</div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Pagamentos com atraso</div><div class="kpi t-ok">1 <span class="small muted">de 60</span></div><div class="kchips"><span class="chip ok">últimas 24 em dia</span></div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Multa + mora pagas</div><div class="kpi">R$ 50,00</div><div class="kchips"><span class="chip n">desde o início</span></div></div>
+</div>
+
+<div class="grid g2" style="margin-top:8px">
+ <div class="card">
+  <h3>Progresso do prazo</h3>
+  <div style="display:flex;justify-content:space-between" class="small"><span><b>60</b> pagas</span><span class="muted">360 parcelas</span></div>
+  <div class="bar ok" style="height:10px;margin:4px 0"><i style="width:16.7%"></i></div>
+  <div class="scale"><span>16,7% do prazo · 300 restantes</span><span>última parcela 15/10/2051</span></div>
+  <table class="kv" style="margin-top:8px">
+   <tr><td class="muted">Valor financiado</td><td class="r">R$ 480.000,00</td></tr>
+   <tr><td class="muted">Saldo devedor hoje</td><td class="r">R$ 400.000,00</td></tr>
+   <tr><td class="muted">Redução do saldo desde o início</td><td class="r t-ok">R$ 80.000,00 <span class="tiny muted">(16,7%)</span></td></tr>
+  </table>
+  <div class="bar ok" style="margin-top:5px"><i style="width:16.7%"></i></div>
+  <div class="tiny muted" style="margin-top:4px">No SAC a amortização é constante; a parcela cai com o tempo à medida que os juros sobre o saldo diminuem.</div>
+ </div>
+ <div class="card">
+  <h3>Para onde foi o dinheiro · parcelas 1–60 <span class="src b">EXTRATO</span></h3>
+  <div class="stack"><i style="width:65.2%;background:var(--bad)"></i><i style="width:34.8%;background:var(--ok)"></i></div>
+  <div class="scale"><span>Juros 65,2%</span><span>Amortização 34,8%</span></div>
+  <table class="kv" style="margin-top:6px">
+   <tr><td><span class="dot bad"></span>&nbsp; Juros pagos</td><td class="r">R$ 150.000,00</td></tr>
+   <tr><td><span class="dot ok"></span>&nbsp; Principal amortizado</td><td class="r">R$ 80.000,00</td></tr>
+   <tr><td class="muted">Seguros MIP + DFI</td><td class="r">R$ 8.000,00</td></tr>
+   <tr><td class="muted">Taxa administrativa</td><td class="r">R$ 1.950,00</td></tr>
+   <tr><td class="muted">Multa + mora</td><td class="r">R$ 50,00</td></tr>
+   <tr><td><b>Total efetivamente pago</b></td><td class="r"><b>R$ 240.000,00</b></td></tr>
+  </table>
+ </div>
+</div>
+
+<div class="card" style="margin-top:8px">
+ <h3>Pontualidade · últimas 36 parcelas (25 → 60)</h3>
+ <div class="strip"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="l"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+ <div class="scale"><span>out/2023</span><span>set/2026</span></div>
+ <div class="tiny muted" style="margin-top:4px"><span class="dot ok"></span> em dia &nbsp; <span class="dot bad"></span> pago com multa/mora &nbsp; <span class="dot" style="background:#5a6068"></span> carência. Uma parcela paga com atraso (set/2024); desde então, todas em dia.</div>
+</div>
+
+<div class="grid g2" style="margin-top:8px">
+ <div class="card">
+  <h3>Amortização extraordinária</h3>
+  <div class="ph-box" style="height:92px">Simulação de amortização extra · a conectar<br>(depende de meta de reserva definida pela família)</div>
+ </div>
+ <div class="card">
+  <h3>Dados do contrato</h3>
+  <table class="kv">
+   <tr><td class="muted">Contrato</td><td class="r">final XXXX</td></tr>
+   <tr><td class="muted">Carteira · sistema · indexador</td><td class="r">SFH · SAC · TR</td></tr>
+   <tr><td class="muted">Taxa nominal</td><td class="r">9,00% a.a.</td></tr>
+   <tr><td class="muted">Valor do imóvel no contrato</td><td class="r">R$ 600.000,00</td></tr>
+   <tr><td class="muted">Valor do imóvel hoje <span class="src m">AVALIAÇÃO</span></td><td class="r">R$ 800.000,00</td></tr>
+   <tr><td class="muted">Localização</td><td class="r muted">omitida (privacidade)</td></tr>
+  </table>
+ </div>
+</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>2 / 6</span></div>
+</div>
+
+<!-- ============ PÁGINA 3 · FLUXO DE CAIXA ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<h2 style="margin-top:0"><span class="n">04</span>Fluxo de caixa · outubro (em andamento)</h2>
+<div class="grid g2">
+ <div class="card">
+  <h3>Snapshot histórico <span class="src h">HIST</span></h3>
+  <table>
+   <tr><td>Receita</td><td class="r t-ok">R$ 12.000,00</td></tr>
+   <tr><td>Despesa</td><td class="r">R$ 8.500,00</td></tr>
+   <tr><td><b>Saldo</b> <span class="dot ok" style="margin-left:4px"></span></td><td class="r t-ok"><b>R$ 3.500,00</b></td></tr>
+  </table>
+  <div class="kchips"><span class="chip ok">salário detectado</span><span class="chip n">não cobre cartões</span></div>
+ </div>
+ <div class="card">
+  <h3>Open Finance · 01–11/10 <span class="src p">PIERRE</span></h3>
+  <table>
+   <tr><td>Entradas</td><td class="r t-ok">R$ 12.000,00</td></tr>
+   <tr><td>Gastos (conta + cartão)</td><td class="r">R$ 9.000,00</td></tr>
+   <tr><td><b>Saldo</b> <span class="dot ok" style="margin-left:4px"></span></td><td class="r t-ok"><b>R$ 3.000,00</b></td></tr>
+  </table>
+  <div class="kchips"><span class="chip n">cartão R$ 4.000,00</span><span class="chip n">conta R$ 5.000,00</span></div>
+ </div>
+</div>
+<div class="diff" style="margin-top:8px"><b>Fontes divergem.</b> Despesa R$ 8.500,00 (HIST) vs R$ 9.000,00 (PIERRE). Causas prováveis: o Open Finance inclui gastos no cartão do Banco C, que o snapshot não cobria, e as datas de corte são diferentes. O relatório mostra as duas leituras lado a lado em vez de escolher uma em silêncio.</div>
+
+<div class="card">
+ <h3>Gastos por categoria · 01–11/10 <span class="src p">PIERRE</span></h3>
+ <table class="cat">
+  <tr><td style="width:40%">Supermercado</td><td><div class="bar"><i style="width:100%"></i></div></td><td class="r">R$ 2.000,00</td></tr>
+  <tr><td>Educação</td><td><div class="bar"><i style="width:75%"></i></div></td><td class="r">R$ 1.500,00</td></tr>
+  <tr><td>Moradia (condomínio, energia, água)</td><td><div class="bar"><i style="width:75%"></i></div></td><td class="r">R$ 1.500,00</td></tr>
+  <tr><td>Transporte</td><td><div class="bar"><i style="width:50%"></i></div></td><td class="r">R$ 1.000,00</td></tr>
+  <tr><td>Saúde</td><td><div class="bar"><i style="width:50%"></i></div></td><td class="r">R$ 1.000,00</td></tr>
+  <tr><td>Lazer</td><td><div class="bar"><i style="width:40%"></i></div></td><td class="r">R$ 800,00</td></tr>
+  <tr><td>Outros</td><td><div class="bar"><i style="width:25%"></i></div></td><td class="r">R$ 500,00</td></tr>
+  <tr><td>Telecom</td><td><div class="bar"><i style="width:20%"></i></div></td><td class="r">R$ 400,00</td></tr>
+  <tr><td>Assinaturas</td><td><div class="bar"><i style="width:15%"></i></div></td><td class="r">R$ 300,00</td></tr>
+ </table>
+</div>
+
+<div class="card">
+ <h3>Assinaturas</h3>
+ <div class="chips">
+  <span class="c"><span class="dot ok"></span>Streaming de vídeo R$ 50,00 <span class="src p">PIERRE</span></span>
+  <span class="c"><span class="dot ok"></span>Streaming de música R$ 20,00 <span class="src p">PIERRE</span></span>
+  <span class="c"><span class="dot ok"></span>Armazenamento em nuvem R$ 10,00 <span class="src p">PIERRE</span></span>
+  <span class="c"><span class="dot bad"></span>Academia R$ 100,00 ×2 no mesmo dia — possível duplicidade <span class="src p">PIERRE</span></span>
+  <span class="c"><span class="dot warn"></span>App de idiomas · provavelmente inativa <span class="src h">HIST</span></span>
+ </div>
+</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>3 / 6</span></div>
+</div>
+
+<!-- ============ PÁGINA 4 · CARTÕES + PARCELAMENTOS ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<h2 style="margin-top:0"><span class="n">05</span>Cartões de crédito · faturas <span class="src p">PIERRE</span></h2>
+<div class="card">
+ <table>
+  <tr><th></th><th>Cartão</th><th class="r">Fatura atual</th><th class="r">Mínimo</th><th class="r">Limite</th><th class="r">Disponível</th><th style="width:21%">Uso do limite</th></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco A · ···1001</td><td class="r">R$ 2.500,00</td><td class="r">R$ 250,00</td><td class="r">R$ 20.000,00</td><td class="r">R$ 17.500,00</td><td><div class="bar ok"><i style="width:12.5%"></i></div><span class="tiny muted">13%</span></td></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco B · ···2002</td><td class="r">R$ 1.000,00</td><td class="r">R$ 100,00</td><td class="r">R$ 5.000,00</td><td class="r">R$ 4.000,00</td><td><div class="bar ok"><i style="width:20%"></i></div><span class="tiny muted">20%</span></td></tr>
+  <tr><td><span class="dot bad"></span></td><td>Banco C · ···3003</td><td class="r">R$ 500,00</td><td class="r">R$ 50,00</td><td class="r">R$ 600,00</td><td class="r t-bad">R$ 100,00</td><td><div class="bar bad"><i style="width:83.3%"></i></div><span class="tiny t-bad">83%</span></td></tr>
+  <tr><td><span class="dot warn"></span></td><td><b>Total</b></td><td class="r"><b>R$ 4.000,00</b></td><td colspan="4" class="tiny muted">28 transações no ciclo · total marcado como estimativa até o fechamento</td></tr>
+ </table>
+ <div class="tiny muted" style="margin-top:4px">Fechamento/vencimento do ciclo atual: a conectar. Status de uso do limite: verde &lt; 50% · amarelo 50–80% · vermelho &gt; 80%.</div>
+</div>
+
+<h2><span class="n">06</span>Parcelamentos <span class="src p">PIERRE</span></h2>
+<div class="grid g3">
+ <div class="card"><div class="label"><span class="dot warn"></span>Ainda a pagar</div><div class="kpi">R$ 3.000,00</div><div class="kchips"><span class="chip n">18 parcelas restantes</span></div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Compras parceladas ativas</div><div class="kpi">5</div><div class="kchips"><span class="chip n">Bancos A e B</span></div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Terminam em até 2 ciclos</div><div class="kpi">2</div><div class="kchips"><span class="chip ok">Geladeira · Óculos</span></div></div>
+</div>
+<div class="card" style="margin-top:8px">
+ <table>
+  <tr><th>Compra</th><th>Cartão</th><th class="r">Parcela</th><th style="width:26%">Progresso</th><th class="r">Pagas/Total</th><th class="r">Restante</th></tr>
+  <tr><td>Notebook</td><td>Banco A</td><td class="r">R$ 250,00</td><td><div class="bar"><i style="width:30%"></i></div></td><td class="r">3/10</td><td class="r">R$ 1.750,00</td></tr>
+  <tr><td>Geladeira</td><td>Banco A</td><td class="r">R$ 200,00</td><td><div class="bar ok"><i style="width:80%"></i></div></td><td class="r">8/10</td><td class="r">R$ 400,00</td></tr>
+  <tr><td>Curso online</td><td>Banco B</td><td class="r">R$ 100,00</td><td><div class="bar"><i style="width:50%"></i></div></td><td class="r">4/8</td><td class="r">R$ 400,00</td></tr>
+  <tr><td>Óculos</td><td>Banco A</td><td class="r">R$ 150,00</td><td><div class="bar ok"><i style="width:66.7%"></i></div></td><td class="r">4/6</td><td class="r">R$ 300,00</td></tr>
+  <tr><td>Tênis</td><td>Banco B</td><td class="r">R$ 50,00</td><td><div class="bar"><i style="width:25%"></i></div></td><td class="r">1/4</td><td class="r">R$ 150,00</td></tr>
+ </table>
+ <div class="tiny muted" style="margin-top:4px">Parcelas que a integração não detalha aparecem como “a conectar” — nunca são estimadas.</div>
+</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>4 / 6</span></div>
+</div>
+
+<!-- ============ PÁGINA 5 · CRÉDITO + ATENÇÃO ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<h2 style="margin-top:0"><span class="n">07</span>Crédito · score — titular <span class="src s">BUREAU</span></h2>
+<div class="grid g3">
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Score — titular</div>
+  <div class="gauge"><div class="arc"></div><div class="hole"></div><div class="needle" style="transform:rotate(39.6deg)"></div></div>
+  <div style="text-align:center;margin-top:3px"><span class="kpi t-ok">720</span> <span class="muted small">/ 1000</span></div>
+  <div class="scale"><span>0</span><span>1000</span></div>
+  <div class="kchips" style="justify-content:center"><span class="chip ok">Bom</span><span class="chip n">+15 no mês</span></div>
+  <div class="tiny muted" style="text-align:center;margin-top:3px">CPF ***.***.***-XX</div>
+ </div>
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Negativações — titular</div>
+  <div class="kpi t-ok">Nenhuma</div>
+  <div class="kchips"><span class="chip ok">nada em aberto</span></div>
+  <div class="tiny muted" style="margin-top:8px">Consultas ao CPF: 3 nos últimos 12 meses.</div>
+ </div>
+ <div class="card">
+  <div class="label"><span class="dot ok"></span>Monitoramento</div>
+  <div class="kpi" style="font-size:11pt">Ativo</div>
+  <div class="kchips"><span class="chip ok">sem alertas em 30 dias</span></div>
+  <div class="label" style="margin-top:10px"><span class="dot ok"></span>Outras restrições</div>
+  <div class="kchips"><span class="chip ok">sem protestos</span><span class="chip ok">sem cheques s/ fundo</span><span class="chip ok">sem ações registradas</span></div>
+ </div>
+</div>
+<div class="card" style="border-style:dashed"><div class="label"><span class="dot" style="background:#5a6068"></span>Score — cônjuge</div><div class="small muted">A conectar · sem dados nesta edição.</div></div>
+
+<h2><span class="n">08</span>Pontos de atenção</h2>
+<div class="card">
+ <div class="attn"><div class="light bad"><i></i><i></i><i></i></div><div><b>Cartão do Banco C com 83% do limite usado</b> <span class="chip bad">Alto</span> <span class="src p">PIERRE</span><br><span class="small muted">Limite baixo (R$ 600,00) e quase todo comprometido. <i>Ação sugerida:</i> concentrar compras nos cartões com folga ou pedir revisão de limite.</span></div></div>
+ <div class="attn"><div class="light warn"><i></i><i></i><i></i></div><div><b>Reserva de emergência ≈ 2,5 meses</b> <span class="chip warn">Médio</span> <span class="src p">PIERRE</span> <span class="src h">HIST</span><br><span class="small muted">Meta da família: 6 meses de despesas. <i>Ação sugerida:</i> direcionar parte de cada entrada para a reserva até a meta.</span></div></div>
+ <div class="attn"><div class="light warn"><i></i><i></i><i></i></div><div><b>Possível cobrança duplicada · academia R$ 100,00</b> <span class="chip warn">Médio</span> <span class="src p">PIERRE</span><br><span class="small muted">Dois lançamentos iguais no mesmo dia. <i>Ação sugerida:</i> conferir na fatura e pedir estorno se confirmado.</span></div></div>
+ <div class="attn"><div class="light warn"><i></i><i></i><i></i></div><div><b>Patrimônio concentrado em imóvel (95,8%)</b> <span class="chip warn">Médio</span> <span class="src m">AVALIAÇÃO</span><br><span class="small muted">Ativo de baixa liquidez, e metade ainda é dívida. <i>Ação sugerida:</i> priorizar reserva líquida antes de novos compromissos de longo prazo.</span></div></div>
+ <div class="attn"><div class="light warn"><i></i><i></i><i></i></div><div><b>Parcela do financiamento vence em 15/10 · R$ 4.000,00</b> <span class="chip warn">Médio</span> <span class="src b">BANCO</span><br><span class="small muted">Saldo em contas cobre a parcela. <i>Ação sugerida:</i> manter o débito agendado para logo após a entrada do salário.</span></div></div>
+ <div class="attn"><div class="light ok"><i></i><i></i><i></i></div><div><b>Pouca exposição em moeda forte (10%)</b> <span class="chip ok">Baixo</span> <span class="src h">HIST</span><br><span class="small muted"><i>Ação sugerida:</i> revisar o tema de diversificação cambial depois que a reserva estiver completa.</span></div></div>
+</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>5 / 6</span></div>
+</div>
+
+<!-- ============ PÁGINA 6 · PORTFÓLIO + CONTAS ============ -->
+<div class="page">
+<div class="fake">Exemplo · dados 100% fictícios</div>
+<h2 style="margin-top:0"><span class="n">09</span>Análise de portfólio <span class="src h">HIST</span> <span class="src m">AVALIAÇÃO</span></h2>
+<div class="grid g4">
+ <div class="card"><div class="label"><span class="dot warn"></span>Imóvel no patrimônio</div><div class="kpi t-warn">95,8%</div><div class="bar warn" style="margin-top:5px"><i style="width:95.8%"></i></div><div class="tiny muted" style="margin-top:3px">baixa liquidez</div></div>
+ <div class="card"><div class="label"><span class="dot ok"></span>Carteira em renda variável</div><div class="kpi">30%</div><div class="bar" style="margin-top:5px"><i style="width:30%"></i></div><div class="tiny muted" style="margin-top:3px">R$ 9.000,00 de R$ 30.000,00</div></div>
+ <div class="card"><div class="label"><span class="dot warn"></span>Reserva de emergência</div><div class="kpi t-warn">≈ 2,5 meses</div><div class="bar warn" style="margin-top:5px"><i style="width:41.7%"></i></div><div class="scale"><span>0</span><span>meta 6 meses</span></div></div>
+ <div class="card"><div class="label"><span class="dot" style="background:#5a6068"></span>Custo de oportunidade</div><div class="kpi muted">a conectar</div><div class="bar ph" style="margin-top:5px"><i style="width:100%"></i></div></div>
+</div>
+<div class="card small" style="margin-top:8px">
+ <ul>
+  <li><b>Concentração em imóvel:</b> ~95,8% do patrimônio bruto está no imóvel (R$ 800.000,00, avaliação informada) — e 50% desse valor ainda é saldo devedor.</li>
+  <li><b>Carteira líquida:</b> R$ 30.000,00, com 70% em renda fixa e 30% em renda variável.</li>
+  <li><b>Moeda forte:</b> 10% da carteira em ETF global; o restante 100% Brasil.</li>
+  <li><b>Reserva:</b> cerca de 2,5 meses de despesas, abaixo da meta de 6 meses.</li>
+ </ul>
+ <div class="note" style="margin-top:8px">Leitura neutra: patrimônio líquido sólido no papel, mas pouco líquido; a prioridade educativa é completar a reserva. Observação educativa, não é recomendação de investimento.</div>
+</div>
+
+<h2><span class="n">10</span>Contas conectadas</h2>
+<div class="card">
+ <table>
+  <tr><th></th><th>Instituição</th><th>Produto</th><th class="r">Snapshot <span class="src h">HIST</span></th><th class="r">Open Finance <span class="src p">PIERRE</span></th><th>Via</th></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco A</td><td>Conta corrente ···1001</td><td class="r">R$ 3.000,00</td><td class="r">R$ 3.000,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco A</td><td>Cartão ···1001</td><td class="r muted">—</td><td class="r">fatura R$ 2.500,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco B</td><td>Conta corrente ···2002</td><td class="r">R$ 1.400,00</td><td class="r">R$ 1.500,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco B</td><td>Cartão ···2002</td><td class="r muted">—</td><td class="r">fatura R$ 1.000,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot ok"></span></td><td>Banco C</td><td>Conta corrente ···3003</td><td class="r muted">a conectar</td><td class="r">R$ 500,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot bad"></span></td><td>Banco C</td><td>Cartão ···3003</td><td class="r muted">—</td><td class="r">fatura R$ 500,00</td><td>Open Finance (Pierre)</td></tr>
+  <tr><td><span class="dot warn"></span></td><td>Banco C</td><td>Investimentos</td><td class="r">R$ 30.000,00</td><td class="r muted">não disponível</td><td>mantido do snapshot (HIST)</td></tr>
+  <tr><td><span class="dot warn"></span></td><td>Corretora D</td><td>Conta</td><td class="r muted">a conectar</td><td class="r muted">não conectado</td><td>a conectar no Pierre</td></tr>
+  <tr><td><span class="dot warn"></span></td><td>Imóvel</td><td><span class="src m">AVALIAÇÃO</span></td><td class="r" colspan="2">R$ 800.000,00</td><td>valor de mercado informado</td></tr>
+  <tr><td><span class="dot warn"></span></td><td>Financiamento</td><td>Imobiliário · final XXXX</td><td class="r" colspan="2">saldo − R$ 400.000,00</td><td>extrato PDF do banco</td></tr>
+ </table>
+ <div class="diff" style="margin-top:6px">Divergências: Banco B conta R$ 1.400,00 (snapshot) × R$ 1.500,00 (Pierre) — leituras em horários diferentes. Investimentos do Banco C só no snapshot; Corretora D ainda precisa ser conectada.</div>
+</div>
+<div class="tiny muted" style="margin-top:6px">Legenda de status: <span class="dot ok"></span> ok &nbsp; <span class="dot warn"></span> atenção &nbsp; <span class="dot bad"></span> crítico. Valores “a conectar” ainda não estão disponíveis nas fontes ativas. Gerado em 12/10/2026 08h07 BRT.</div>
+<div class="pfoot"><span>Template com dados fictícios — conteúdo educativo, não é recomendação de investimento.</span><span>6 / 6</span></div>
+</div>
+</body></html>

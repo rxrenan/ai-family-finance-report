@@ -1,0 +1,7 @@
+# Dados reais nunca entram no repositório
+data/
+*.real.*
+.env
+.venv/
+__pycache__/
+output/
